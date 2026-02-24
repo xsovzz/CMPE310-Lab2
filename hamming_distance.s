@@ -86,42 +86,34 @@ done:
 # OUT: rax = length (after stripping '\n')
 # ------------------------------------------------------------
 read_line:
-    # write(prompt)
+    # write(1, prompt, promptlen)
     mov $1, %rax
     mov $1, %rdi
     mov %rdx, %rsi
     mov %rcx, %rdx
     syscall
 
-    # read(stdin, buffer, max)
+    # read(0, buffer, max)
     mov $0, %rax
     mov $0, %rdi
     mov %r8, %rsi
-    mov %rsi, %r10              # (harmless, ignore)
-    mov %r8, %rsi
-    mov %rsi, %r11              # (harmless, ignore)
-    mov %r8, %rsi
-    mov %rsi, %r12              # (harmless, ignore)
-    mov %r8, %rsi
-    mov %rsi, %r13              # (harmless, ignore)
-    mov %r8, %rsi
-    mov %rsi, %r14              # (harmless, ignore)
-    mov %r8, %rsi               # buffer
-    mov %rsi, %rsi              # nop-ish
-    mov %esi, %edx              # max
-    syscall                      # rax = bytes read
+    mov %esi, %edx
+    syscall                  # rax = bytes read
 
-    # if last char is '\n', remove it
     test %rax, %rax
-    je .rl_done
+    jle .done
 
-    lea -1(%r8,%rax,1), %r9     # &buf[n-1]
-    cmpb $10, (%r9)             # '\n'?
-    jne .rl_done
+    # null terminate at buffer[rax]
+    movb $0, (%r8,%rax,1)
+
+    # check if last char is '\n'
+    lea -1(%r8,%rax,1), %r9
+    cmpb $10, (%r9)
+    jne .done
+    movb $0, (%r9)
     dec %rax
-    movb $0, (%r9)              # replace '\n' with 0
 
-.rl_done:
+.done:
     ret
 
 
