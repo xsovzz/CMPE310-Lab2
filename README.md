@@ -1,7 +1,7 @@
 # Hamming Distance (Assembly)
 
 ## Description
-This program computes the Hamming distance between two input strings using x86-64 assembly.
+This program computes the Hamming distance between two input strings using x86-64 assembly
 
 ## Compile and Run
 
