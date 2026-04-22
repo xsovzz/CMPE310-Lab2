@@ -8,4 +8,5 @@ This program computes the Hamming distance between two input strings using x86-6
 ```bash
 as -o hamming.o hamming_distance.s
 ld -o hamming hamming.o
+
 ./hamming
